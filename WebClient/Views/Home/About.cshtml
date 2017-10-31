@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "About";
+}
+<h2>@ViewBag.Title.</h2>
+<h3>@ViewBag.Message</h3>
+
+@section scripts  {
+    <script>
+        $(document).ready(function () {
+
+            if (sessionStorage.getItem('token') == null) {
+                window.location='/home/login'
+            }
+
+            $("#empDiv").hide();
+            $("#btnEmp").on("click", function () {
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:49701/api/home",
+                    dataType: 'json',
+                    beforeSend: function (xhr, settings) { xhr.setRequestHeader('Authorization', 'Bearer ' + sessionStorage.getItem('token')); },
+                    success: function (data) {
+                        var formattedData = '';
+                        $.each(data, function (key, value) {
+                            formattedData += '<tr><td>' + value.Id + '</td><td>' + value.Name + '</td><td>' + value.Address + '</td></tr>'
+                        });
+
+                        if (formattedData != '') {
+                            $("#empDiv").show();
+                            $("#empDiv table tbody").html('');
+                            $("#empDiv table tbody").append(formattedData);
+                        }
+                    },
+                    error: function (ex) {
+                        window.location = '/home/login';
+                    }
+                });
+            });
+
+        });
+
+    </script>
+}
+<button class="btn btn-default" id="btnEmp">Load Employee</button>
+
+<div style="margin-top:10px;" id="empDiv">
+    <table class="table table-responsive table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Address</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</div>
+
+
+
+
+

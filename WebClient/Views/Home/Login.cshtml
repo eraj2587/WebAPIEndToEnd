@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>Login</h2>
+
+
+UserName : <input id="name"/><br /><br />
+Password : <input id="pwd" type="password"/><br /><br />
+<button id="btnLogin" class="btn btn-info">Login</button>
+
+
+@section scripts  {
+    <script>
+
+        $(document).ready(function () {
+            $("#btnLogin").on("click", function () {
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:49701/token",
+                    data: {
+                        username: $("#name").val(),
+                        password: $("#pwd").val(),
+                        grant_type: "password"
+                    },
+                    success: function (data) {
+                        sessionStorage.setItem('token', data.access_token);
+                        window.location='/home/about'
+                    },
+                    error: function (ex) {
+                        alert(ex);
+                    }
+                });
+            });
+
+        });
+
+    </script>
+}
+
